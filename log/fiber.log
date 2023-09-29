@@ -1,0 +1,11 @@
+{"pid":12770, "timestamp":"2023/Sep/29 20:01:57", "status":404, "latency":"     70.686µs", "method":"POST", "path":"/activity-groups"}
+{"pid":12770, "timestamp":"2023/Sep/29 20:02:34", "status":404, "latency":"     57.467µs", "method":"POST", "path":"/activity-groups"}
+{"pid":12770, "timestamp":"2023/Sep/29 20:03:56", "status":404, "latency":"      9.378µs", "method":"POST", "path":"/activity-groups"}
+{"pid":12770, "timestamp":"2023/Sep/29 20:23:38", "status":404, "latency":"     11.304µs", "method":"POST", "path":"/activity-groups"}
+{"pid":12770, "timestamp":"2023/Sep/29 20:23:58", "status":404, "latency":"     11.284µs", "method":"POST", "path":"/activity-groups"}
+{"pid":14974, "timestamp":"2023/Sep/29 20:27:41", "status":404, "latency":"     20.403µs", "method":"GET", "path":"/health"}
+{"pid":14974, "timestamp":"2023/Sep/29 20:27:44", "status":404, "latency":"     10.103µs", "method":"GET", "path":"/health"}
+{"pid":14974, "timestamp":"2023/Sep/29 20:29:48", "status":404, "latency":"      15.88µs", "method":"GET", "path":"/health"}
+{"pid":15531, "timestamp":"2023/Sep/29 20:31:34", "status":200, "latency":"    179.604µs", "method":"GET", "path":"/health"}
+{"pid":15531, "timestamp":"2023/Sep/29 20:31:59", "status":404, "latency":"     28.658µs", "method":"POST", "path":"/activity-groups"}
+{"pid":15667, "timestamp":"2023/Sep/29 20:32:24", "status":400, "latency":"  17.623088ms", "method":"POST", "path":"/activity-groups"}
