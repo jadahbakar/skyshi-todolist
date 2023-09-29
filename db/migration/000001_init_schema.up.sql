@@ -1,5 +1,5 @@
 CREATE TABLE activities (
-  activity_id  integer,
+  activity_id  integer autoincrement AUTO_INCREMENT,
   title text,
   email text,
   created_at timestamp,
