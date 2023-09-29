@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 
-	"github.com/jadahbakar/skyshi-todolist/domain"
 	"github.com/jadahbakar/skyshi-todolist/repository/mysql"
 	"github.com/jadahbakar/skyshi-todolist/util/config"
 	"github.com/jadahbakar/skyshi-todolist/util/engine"
@@ -26,13 +25,13 @@ func main() {
 	}
 
 	log.Printf("Connecting DB......")
-	db, err := mysql.NewMysqlClient(config)
+	_, err = mysql.Connected(config)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 	log.Printf("Connected to DB....")
 
-	domain.MonolithIOC(server, db)
+	// domain.MonolithIOC(server, db)
 
 	engine.StartFiberWithGracefulShutdown(server, config.App.Port)
 }

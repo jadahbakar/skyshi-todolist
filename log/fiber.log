@@ -9,3 +9,5 @@
 {"pid":15531, "timestamp":"2023/Sep/29 20:31:34", "status":200, "latency":"    179.604µs", "method":"GET", "path":"/health"}
 {"pid":15531, "timestamp":"2023/Sep/29 20:31:59", "status":404, "latency":"     28.658µs", "method":"POST", "path":"/activity-groups"}
 {"pid":15667, "timestamp":"2023/Sep/29 20:32:24", "status":400, "latency":"  17.623088ms", "method":"POST", "path":"/activity-groups"}
+{"pid":82080, "timestamp":"2023/Sep/29 20:47:29", "status":404, "latency":"      49.98µs", "method":"POST", "path":"/"}
+{"pid":82080, "timestamp":"2023/Sep/29 20:47:54", "status":400, "latency":"  99.342557ms", "method":"POST", "path":"/activity-groups"}
