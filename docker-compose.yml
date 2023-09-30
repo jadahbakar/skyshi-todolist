@@ -7,6 +7,8 @@ services:
       - MYSQL_PASSWORD=secret
       - MYSQL_DBNAME=todolist
       - MYSQL_PORT=3306
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_ALLOW_EMPTY_PASSWORD=no
   api:
     build:
       context: .
@@ -20,7 +22,7 @@ services:
     entrypoint:
       [
         "/app/wait-for.sh",
-        "mysql:5432",
+        "mysql:3306",
         "--",
         "/app/start.sh"
       ]

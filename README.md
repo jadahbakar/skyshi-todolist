@@ -118,7 +118,7 @@ To get a local copy up and running follow these simple example steps.
 
 7. Test using Postman, with address and port
   ```sh
-  localhost:8000
+  localhost:3030
 
   ```
 
