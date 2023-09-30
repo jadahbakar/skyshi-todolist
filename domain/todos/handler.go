@@ -1,4 +1,4 @@
-package activity
+package todos
 
 import (
 	"fmt"
@@ -18,8 +18,8 @@ func NewHandler(r fiber.Router, s Service) {
 	r.Post("/", h.Create)
 	r.Patch("/:id", h.Update)
 	r.Delete("/:id", h.Delete)
-	r.Get("/:id", h.GetById)
 	r.Get("/", h.GetAll)
+	r.Get("/:id", h.GetById)
 }
 
 func (h *Handler) Create(c *fiber.Ctx) error {
@@ -66,7 +66,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	param := c.Params("id")
 
 	//---service
-	data, err := h.service.Update(param, req.Title)
+	data, err := h.service.Update(param, req)
 	if err != nil {
 		logger.Errorf("Error On Service: ", err)
 		return response.HandleErrors(c, err.Error())
@@ -91,11 +91,11 @@ func (h *Handler) Delete(c *fiber.Ctx) error {
 	return response.SuccessDelete(c, fiber.StatusOK, resp)
 }
 
-func (h *Handler) GetById(c *fiber.Ctx) error {
-	param := c.Params("id")
+func (h *Handler) GetAll(c *fiber.Ctx) error {
+	queryValue := c.Query("activity_group_id")
 
 	//---service
-	data, err := h.service.FindActId(param)
+	data, err := h.service.FindAll(queryValue)
 	if err != nil {
 		logger.Errorf("Error On Service: ", err)
 		return response.HandleErrors(c, err.Error())
@@ -105,9 +105,11 @@ func (h *Handler) GetById(c *fiber.Ctx) error {
 	return response.NewSuccess(c, fiber.StatusOK, data)
 }
 
-func (h *Handler) GetAll(c *fiber.Ctx) error {
+func (h *Handler) GetById(c *fiber.Ctx) error {
+	param := c.Params("id")
+
 	//---service
-	data, err := h.service.FindAll()
+	data, err := h.service.FindTodoById(param)
 	if err != nil {
 		logger.Errorf("Error On Service: ", err)
 		return response.HandleErrors(c, err.Error())

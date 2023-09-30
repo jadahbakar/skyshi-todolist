@@ -18,3 +18,16 @@ func NewSuccess(c *fiber.Ctx, code int, d interface{}) error {
 	}
 	return c.Status(code).JSON(data)
 }
+
+type Deleted struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}
+
+func SuccessDelete(c *fiber.Ctx, code int, m string) error {
+	data := Deleted{
+		Status:  "Not Found",
+		Message: m,
+	}
+	return c.Status(code).JSON(data)
+}

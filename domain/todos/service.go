@@ -1,4 +1,4 @@
-package activity
+package todos
 
 import (
 	"strconv"
@@ -11,19 +11,19 @@ type srv struct {
 }
 
 type Service interface {
-	Create(*PostReq) (*Activity, error)
-	Update(string, string) (*Activity, error)
+	Create(*PostReq) (*Todo, error)
+	FindById(int64) (*Todo, error)
+	Update(string, *PatchReq) (*Todo, error)
 	Delete(string) (int64, error)
-	FindById(int64) (*Activity, error)
-	FindActId(string) (*Activity, error)
-	FindAll() ([]Activity, error)
+	FindAll(string) ([]Todo, error)
+	FindTodoById(string) (*Todo, error)
 }
 
 func NewService(r Repository) Service {
 	return &srv{repo: r}
 }
 
-func (s *srv) Create(req *PostReq) (*Activity, error) {
+func (s *srv) Create(req *PostReq) (*Todo, error) {
 	id, err := s.repo.Create(req)
 	if err != nil {
 		return nil, err
@@ -33,14 +33,19 @@ func (s *srv) Create(req *PostReq) (*Activity, error) {
 
 }
 
-func (s *srv) Update(param string, title string) (*Activity, error) {
+func (s *srv) FindById(id int64) (*Todo, error) {
+	res, err := s.repo.GetById(id)
+	return res, err
+}
+
+func (s *srv) Update(param string, req *PatchReq) (*Todo, error) {
 	id, err := strconv.ParseInt(param, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
 		return nil, err
 	}
 
-	resid, err := s.repo.Update(id, title)
+	resid, err := s.repo.Update(id, req)
 	if err != nil {
 		return nil, err
 	}
@@ -64,12 +69,22 @@ func (s *srv) Delete(param string) (int64, error) {
 	return resid, err
 }
 
-func (s *srv) FindById(id int64) (*Activity, error) {
-	res, err := s.repo.GetById(id)
-	return res, err
+func (s *srv) FindAll(param string) ([]Todo, error) {
+	id, err := strconv.ParseInt(param, 10, 64)
+	if err != nil {
+		logger.Error("error parsing id")
+		return nil, err
+	}
+
+	res, err := s.repo.GetAll(id)
+	if err != nil {
+		logger.Error("error get data")
+		return nil, err
+	}
+	return res, nil
 }
 
-func (s *srv) FindActId(param string) (*Activity, error) {
+func (s *srv) FindTodoById(param string) (*Todo, error) {
 	id, err := strconv.ParseInt(param, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
@@ -78,14 +93,4 @@ func (s *srv) FindActId(param string) (*Activity, error) {
 
 	res, err := s.FindById(id)
 	return res, err
-
-}
-
-func (s *srv) FindAll() ([]Activity, error) {
-	res, err := s.repo.GetAll()
-	if err != nil {
-		logger.Error("error get data")
-		return nil, err
-	}
-	return res, nil
 }

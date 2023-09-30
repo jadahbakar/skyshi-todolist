@@ -12,3 +12,7 @@ type PostReq struct {
 	Title string `json:"title"`
 	Email string `json:"email"`
 }
+
+type PatchReq struct {
+	Title string `json:"title"`
+}
