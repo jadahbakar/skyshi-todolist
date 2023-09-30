@@ -27,7 +27,7 @@ type (
 	Database struct {
 		Url      string
 		Host     string
-		Port     int
+		Port     string
 		User     string
 		Password string
 		Name     string
@@ -58,7 +58,7 @@ func NewConfig() (config *Config, err error) {
 		Db: &Database{
 			Url:      viper.GetString("DATABASE_URL"),
 			Host:     viper.GetString("MYSQL_HOST"),
-			Port:     viper.GetInt("MYSQL_PORT"),
+			Port:     viper.GetString("MYSQL_PORT"),
 			User:     viper.GetString("MYSQL_USER"),
 			Password: viper.GetString("MYSQL_PASSWORD"),
 			Name:     viper.GetString("MYSQL_DBNAME"),

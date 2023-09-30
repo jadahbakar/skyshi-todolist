@@ -10,4 +10,9 @@ migratedown:
 server:
 	go run main.go
 
-.PHONY: mysqldb migrateup migratedown server
+clear:
+	docker rm $(docker ps -a -q)
+	docker rmi $(docker images -a -q)
+	docker system prune
+
+.PHONY: mysqldb migrateup migratedown server clear
