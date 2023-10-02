@@ -21,7 +21,9 @@ func Connected(config *config.Config) (*sqlx.DB, error) {
 	// 	config.Db.Name,
 	// )
 	// log.Info(dsn)
-	db, err := sqlx.Connect("mysql", config.Db.Url)
+	// db, err := sqlx.Connect("mysql", config.Db.Url)
+	dsn := "todo:secret@tcp(mysql:3306)/todolist"
+	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
