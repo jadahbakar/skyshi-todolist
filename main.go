@@ -4,12 +4,13 @@ import (
 	"log"
 
 	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jadahbakar/skyshi-todolist/domain"
 	"github.com/jadahbakar/skyshi-todolist/repository/mysql"
 	"github.com/jadahbakar/skyshi-todolist/util/config"
 	"github.com/jadahbakar/skyshi-todolist/util/engine"
 	"github.com/jadahbakar/skyshi-todolist/util/logger"
-	"github.com/spf13/viper"
 )
 
 func main() {
@@ -33,20 +34,27 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 	log.Printf("Connected to DB....")
-	log.Printf("Prepare Migration..")
 
-	viper.SetConfigFile("config.yml")
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file: %s", err)
-	}
-	driver, err := migrate.New(
-		"file://"+viper.GetString("database.migrations_folder"),
-		viper.GetString("database.connection_string"),
-	)
+	log.Printf("Prepare Migration..")
+	// viper.SetConfigFile("migrate.yml")
+	// if err := viper.ReadInConfig(); err != nil {
+	// 	log.Fatalf("Error reading config file: %s", err)
+	// }
+	// driver, err := migrate.New(
+	// 	"file://"+viper.GetString("database.migrations_folder"),
+	// 	viper.GetString("database.connection_string"),
+	// )
+	// if err != nil {
+	// 	log.Fatalf("Error creating migration driver: %s", err)
+	// }
+
+	// if err := driver.Up(); err != nil && err != migrate.ErrNoChange {
+	// 	log.Fatalf("Error applying migrations: %s", err)
+	// }
+	driver, err := migrate.New("file://"+config.Db.MigrationFolder, "mysql://"+config.Db.Url)
 	if err != nil {
 		log.Fatalf("Error creating migration driver: %s", err)
 	}
-
 	if err := driver.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatalf("Error applying migrations: %s", err)
 	}

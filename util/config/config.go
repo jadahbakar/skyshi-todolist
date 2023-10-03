@@ -25,12 +25,13 @@ type (
 	}
 
 	Database struct {
-		Url      string
-		Host     string
-		Port     string
-		User     string
-		Password string
-		Name     string
+		Url             string
+		MigrationFolder string
+		Host            string
+		Port            string
+		User            string
+		Password        string
+		Name            string
 	}
 )
 
@@ -56,12 +57,13 @@ func NewConfig() (config *Config, err error) {
 			WriteTimeOut:  viper.GetInt("APP_WRITE_TIMEOUT"),
 		},
 		Db: &Database{
-			Url:      viper.GetString("DATABASE_URL"),
-			Host:     viper.GetString("MYSQL_HOST"),
-			Port:     viper.GetString("MYSQL_PORT"),
-			User:     viper.GetString("MYSQL_USER"),
-			Password: viper.GetString("MYSQL_PASSWORD"),
-			Name:     viper.GetString("MYSQL_DBNAME"),
+			Url:             viper.GetString("DATABASE_URL"),
+			MigrationFolder: viper.GetString("MIGRATION_FOLDER"),
+			Host:            viper.GetString("MYSQL_HOST"),
+			Port:            viper.GetString("MYSQL_PORT"),
+			User:            viper.GetString("MYSQL_USER"),
+			Password:        viper.GetString("MYSQL_PASSWORD"),
+			Name:            viper.GetString("MYSQL_DBNAME"),
 		},
 	}
 	return &configuration, err
