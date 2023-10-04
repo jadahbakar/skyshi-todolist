@@ -36,21 +36,6 @@ func main() {
 	log.Printf("Connected to DB....")
 
 	log.Printf("Prepare Migration..")
-	// viper.SetConfigFile("migrate.yml")
-	// if err := viper.ReadInConfig(); err != nil {
-	// 	log.Fatalf("Error reading config file: %s", err)
-	// }
-	// driver, err := migrate.New(
-	// 	"file://"+viper.GetString("database.migrations_folder"),
-	// 	viper.GetString("database.connection_string"),
-	// )
-	// if err != nil {
-	// 	log.Fatalf("Error creating migration driver: %s", err)
-	// }
-
-	// if err := driver.Up(); err != nil && err != migrate.ErrNoChange {
-	// 	log.Fatalf("Error applying migrations: %s", err)
-	// }
 	driver, err := migrate.New("file://"+config.Db.MigrationFolder, "mysql://"+config.Db.Url)
 	if err != nil {
 		log.Fatalf("Error creating migration driver: %s", err)
@@ -58,7 +43,6 @@ func main() {
 	if err := driver.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatalf("Error applying migrations: %s", err)
 	}
-
 	log.Println("Migrations applied successfully!")
 
 	domain.MonolithIOC(server, db)

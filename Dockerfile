@@ -12,7 +12,6 @@ FROM alpine:3.16
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY config.env .
-# COPY migrate.yaml .
 COPY script/wait-for.sh .
 COPY log ./log
 COPY db/migrations ./db/migrations
