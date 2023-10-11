@@ -28,7 +28,7 @@ type (
 		Url             string
 		MigrationFolder string
 		Host            string
-		Port            string
+		Port            int
 		User            string
 		Password        string
 		Name            string
@@ -60,7 +60,7 @@ func NewConfig() (config *Config, err error) {
 			Url:             viper.GetString("DATABASE_URL"),
 			MigrationFolder: viper.GetString("MIGRATION_FOLDER"),
 			Host:            viper.GetString("MYSQL_HOST"),
-			Port:            viper.GetString("MYSQL_PORT"),
+			Port:            viper.GetInt("MYSQL_PORT"),
 			User:            viper.GetString("MYSQL_USER"),
 			Password:        viper.GetString("MYSQL_PASSWORD"),
 			Name:            viper.GetString("MYSQL_DBNAME"),

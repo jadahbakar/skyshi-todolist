@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/golang-migrate/migrate/v4"
@@ -36,7 +37,16 @@ func main() {
 	log.Printf("Connected to DB....")
 
 	log.Printf("Prepare Migration..")
-	driver, err := migrate.New("file://"+config.Db.MigrationFolder, "mysql://"+config.Db.Url)
+
+	mysqlHost := config.Db.Host
+	mysqlPort := config.Db.Port
+	mysqlUser := config.Db.User
+	mysqlPass := config.Db.Password
+	mysqlDb := config.Db.Name
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", mysqlUser, mysqlPass, mysqlHost, mysqlPort, mysqlDb)
+
+	driver, err := migrate.New("file://"+config.Db.MigrationFolder, "mysql://"+dsn)
 	if err != nil {
 		log.Fatalf("Error creating migration driver: %s", err)
 	}

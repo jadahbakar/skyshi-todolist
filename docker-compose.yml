@@ -9,20 +9,4 @@ services:
       MYSQL_PASSWORD: secret
     ports:
       - 3306:3306
-    networks:
-      - skyshi-todo-network
-  api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3030:3030"
-    networks:
-      - skyshi-todo-network
-    depends_on:
-      - mysql
-    command: ["/app/wait-for2.sh","mysql","3306", "/app/main"]
-
-networks:
-  skyshi-todo-network:
 

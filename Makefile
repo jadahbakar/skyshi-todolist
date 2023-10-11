@@ -55,8 +55,13 @@ upload:
 	@docker push $(DOCKER_HUB_REPO)
 		-t $(DOCKER_IMAGE_NAME) .
 
+mysql-run:
+	@docker run --name mysqldb -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=todolist -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -d mysql:latest
+
+build-single:
+	@docker build -f Dockerfile-single -t skyshi-todo .
 run:
-	@docker run -e MYSQL_HOST=172.19.0.2 -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -e MYSQL_DBNAME=todolist -p 8090:3030 slackman/skyshi-todolist
+	@docker run -e MYSQL_HOST=172.17.0.2 -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -e MYSQL_DBNAME=todolist -p 8090:3030 skyshi-todo:latest
 
 
-.PHONY: mysqldb migrateup migratedown server up clear rm rmi prune hapus push upload
+.PHONY: mysqldb migrateup migratedown server up clear rm rmi prune hapus push upload mysql-run
