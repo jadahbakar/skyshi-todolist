@@ -12,9 +12,9 @@ type srv struct {
 
 type Service interface {
 	Create(*PostReq) (*Todo, error)
-	FindById(int64) (*Todo, error)
+	FindById(int) (*Todo, error)
 	Update(string, *PatchReq) (*Todo, error)
-	Delete(string) (int64, error)
+	Delete(string) (int, error)
 	FindAll(string) ([]Todo, error)
 	FindTodoById(string) (*Todo, error)
 }
@@ -33,13 +33,13 @@ func (s *srv) Create(req *PostReq) (*Todo, error) {
 
 }
 
-func (s *srv) FindById(id int64) (*Todo, error) {
+func (s *srv) FindById(id int) (*Todo, error) {
 	res, err := s.repo.GetById(id)
 	return res, err
 }
 
 func (s *srv) Update(param string, req *PatchReq) (*Todo, error) {
-	id, err := strconv.ParseInt(param, 10, 64)
+	id, err := strconv.Atoi(param) //, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
 		return nil, err
@@ -54,23 +54,22 @@ func (s *srv) Update(param string, req *PatchReq) (*Todo, error) {
 
 }
 
-func (s *srv) Delete(param string) (int64, error) {
-	id, err := strconv.ParseInt(param, 10, 64)
+func (s *srv) Delete(param string) (int, error) {
+	id, err := strconv.Atoi(param) //, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
 		return 0, err
 	}
-
-	resid, err := s.repo.Delete(id)
+	_, err = s.repo.Delete(id)
 	if err != nil {
 		return 0, err
 	}
 
-	return resid, err
+	return id, err
 }
 
 func (s *srv) FindAll(param string) ([]Todo, error) {
-	id, err := strconv.ParseInt(param, 10, 64)
+	id, err := strconv.Atoi(param) //, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
 		return nil, err
@@ -85,7 +84,7 @@ func (s *srv) FindAll(param string) ([]Todo, error) {
 }
 
 func (s *srv) FindTodoById(param string) (*Todo, error) {
-	id, err := strconv.ParseInt(param, 10, 64)
+	id, err := strconv.Atoi(param) //, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
 		return nil, err

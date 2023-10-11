@@ -12,6 +12,7 @@ type mysqlRepo struct {
 }
 
 func Connected(config *config.Config) (*sqlx.DB, error) {
+	// log.Printf(config.Db.Url)
 	db, err := sqlx.Connect("mysql", config.Db.Url)
 	if err != nil {
 		return nil, err
