@@ -12,18 +12,18 @@ type repo struct {
 }
 
 type Repository interface {
-	Create(*PostReq) (int64, error)
-	Update(int64, *PatchReq) (int64, error)
-	Delete(int64) (int64, error)
-	GetById(int64) (*Todo, error)
-	GetAll(int64) ([]Todo, error)
+	Create(*PostReq) (int, error)
+	Update(int, *PatchReq) (int, error)
+	Delete(int) (int, error)
+	GetById(int) (*Todo, error)
+	GetAll(int) ([]Todo, error)
 }
 
 func NewRepository(db *sqlx.DB) Repository {
 	return &repo{db}
 }
 
-func (r *repo) Create(req *PostReq) (int64, error) {
+func (r *repo) Create(req *PostReq) (int, error) {
 	query := fmt.Sprintf("INSERT INTO todos(title, activity_group_id, is_active, priority, created_at, updated_at) VALUES ('%s', %d, %t, 'very-high',now(), now())", req.Title, req.ActivityId, req.IsActive)
 	res, err := r.db.Exec(query)
 	if err != nil {
@@ -37,10 +37,12 @@ func (r *repo) Create(req *PostReq) (int64, error) {
 		return 0, err
 	}
 
-	return lastId, nil
+	logger.Infof("LastInsertId: %d", int(lastId))
+
+	return int(lastId), nil
 }
 
-func (r *repo) GetById(id int64) (*Todo, error) {
+func (r *repo) GetById(id int) (*Todo, error) {
 	var t Todo
 	query := "SELECT todo_id, title, activity_group_id, is_active, priority, created_at, updated_at FROM todos WHERE todo_id = ?"
 	err := r.db.QueryRow(query, id).Scan(&t.Id, &t.Title, &t.ActivityId, &t.IsActive, &t.Priority, &t.CreatedAt, &t.UpdatedAt)
@@ -51,7 +53,7 @@ func (r *repo) GetById(id int64) (*Todo, error) {
 	return &t, nil
 }
 
-func (r *repo) Update(id int64, req *PatchReq) (int64, error) {
+func (r *repo) Update(id int, req *PatchReq) (int, error) {
 	query := fmt.Sprintf("UPDATE todos SET title = '%s', priority = '%s',  is_active = %t, updated_at = now() WHERE todo_id = %d", req.Title, req.Priority, req.IsActive, id)
 	res, err := r.db.Exec(query)
 	if err != nil {
@@ -73,7 +75,7 @@ func (r *repo) Update(id int64, req *PatchReq) (int64, error) {
 	return id, nil
 }
 
-func (r *repo) Delete(id int64) (int64, error) {
+func (r *repo) Delete(id int) (int, error) {
 	query := fmt.Sprintf("DELETE FROM todos WHERE todo_id = %d", id)
 	res, err := r.db.Exec(query)
 	if err != nil {
@@ -94,7 +96,7 @@ func (r *repo) Delete(id int64) (int64, error) {
 	return id, nil
 }
 
-func (r *repo) GetAll(id int64) ([]Todo, error) {
+func (r *repo) GetAll(id int) ([]Todo, error) {
 	result := make([]Todo, 0)
 	t := Todo{}
 	query := fmt.Sprintf("SELECT todo_id, activity_group_id, title, is_active, priority, created_at, updated_at FROM todos WHERE activity_group_id = %d", id)
