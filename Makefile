@@ -54,4 +54,8 @@ upload:
 	@docker push $(DOCKER_HUB_REPO)
 		-t $(DOCKER_IMAGE_NAME) .
 
+run:
+	@docker run -e MYSQL_HOST=172.25.0.2 -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -e MYSQL_DBNAME=todolist -p 8090:3030 slackman/skyshi-todolist
+
+
 .PHONY: mysqldb migrateup migratedown server up clear rm rmi prune hapus push upload
