@@ -12,10 +12,9 @@ FROM alpine:3.16
 WORKDIR /app
 COPY --from=builder /app/main .
 COPY config.env .
-COPY script/wait-for2.sh .
 COPY log ./log
 COPY db/migrations ./db/migrations
 
 
-EXPOSE 8000
+EXPOSE 3030
 CMD [ "/app/main" ]

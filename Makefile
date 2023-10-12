@@ -1,49 +1,29 @@
-mysqldb:
-	docker run --name mysql81 -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=todolist -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -p 3306:3306 -d mysql:8.1
-
-migrateup:
-	migrate -path db/migration -database "mysql://todo:secret@tcp(mysql:3306)/todolist" -verbose up
-
-migratedown:
-	migrate -path db/migration -database "mysql://todo:secret@tcp(mysql:3306)/todolist" -verbose down
-
-server:
-	go run main.go
-
-up:
-	docker compose up
-
-clear:
-	docker stop $(docker ps -a -q)
-	docker rm $(docker ps -a -q)
-	docker rmi $(docker images -a -q)
-	docker system prune
-
-rm:
-	docker container rm $$(docker ps -aq) -f
-
-rmi:
-	docker rmi $$(docker images -a -q)
-
-prune:
-	docker system prune
-
-hapus:
-	docker rm $(docker ps -a -q --filter="name=skyshi-todolist-api-1")
-	docker rmi $(docker images 'skyshi-todolist_api' -a -q)
-	docker compose up
 
 # get variable from env file
 include config.env
 NAME							= $(APP_NAME)
 VERSION 					= $(shell git describe --tags --always)
-DOCKER_HUB_REPO		= slackman/skyshi-todolist
+DOCKER_HUB_REPO		= slackman/$(APP_NAME)
 DOCKER_IMAGE_NAME	= $(NAME):$(VERSION)
 
+server:
+	go run main.go
+
+rm:
+	docker container rm $$(docker ps -aq) -f
+
+rmi:
+	docker rmi -f $$(docker images -a -q)
+
+prune:
+	docker system prune
+
+mysqldb:
+	@docker run --name mysqldb -e MYSQL_ROOT_PASSWORD=$(MYSQL_PASSWORD) -e MYSQL_DATABASE=$(MYSQL_DBNAME) -e MYSQL_USER=$(MYSQL_USER) -e MYSQL_PASSWORD=$(MYSQL_PASSWORD) -d  mysql:latest
 
 build:
 	@echo "-> Running $@"
-	@docker build --build-arg TAGGED=builder-${DOCKER_IMAGE_NAME} --file Dockerfile-single --tag $(DOCKER_IMAGE_NAME) .
+	@docker build --build-arg TAGGED=builder-${DOCKER_IMAGE_NAME} --file Dockerfile --tag $(DOCKER_IMAGE_NAME) .
 
 push:
 	@echo "-> Running $@"
@@ -53,15 +33,8 @@ push:
 
 upload:
 	@docker push $(DOCKER_HUB_REPO)
-		-t $(DOCKER_IMAGE_NAME) .
 
-mysql-run:
-	@docker run --name mysqldb -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=todolist -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -d mysql:latest
-
-build-single:
-	@docker build -f Dockerfile-single -t skyshi-todo .
 run:
-	@docker run -e MYSQL_HOST=172.17.0.2 -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -e MYSQL_DBNAME=todolist -p 8090:3030 skyshi-todo:latest
+	@docker run -e MYSQL_HOST=172.17.0.2 -e MYSQL_USER=$(MYSQL_USER) -e MYSQL_PASSWORD=$(MYSQL_PASSWORD) -e MYSQL_DBNAME=$(MYSQL_DBNAME) -p 3030:3030 $(DOCKER_HUB_REPO):latest
 
-
-.PHONY: mysqldb migrateup migratedown server up clear rm rmi prune hapus push upload mysql-run
+.PHONY: server rm rmi prune mysqldb build push upload run

@@ -57,7 +57,6 @@ func NewConfig() (config *Config, err error) {
 			WriteTimeOut:  viper.GetInt("APP_WRITE_TIMEOUT"),
 		},
 		Db: &Database{
-			Url:             viper.GetString("DATABASE_URL"),
 			MigrationFolder: viper.GetString("MIGRATION_FOLDER"),
 			Host:            viper.GetString("MYSQL_HOST"),
 			Port:            viper.GetInt("MYSQL_PORT"),
