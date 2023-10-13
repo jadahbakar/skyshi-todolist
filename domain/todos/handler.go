@@ -41,7 +41,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	data, err := h.service.Create(req)
 	if err != nil {
 		logger.Errorf("Error On Service: ", err)
-		return response.HandleErrors(c, err.Error())
+		return response.BadRequest(c, err.Error())
 	}
 
 	//---response

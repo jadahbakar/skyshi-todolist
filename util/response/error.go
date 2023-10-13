@@ -8,8 +8,8 @@ import (
 
 // errors response
 var (
-	ErrBadRequest     = errors.New("Bad Request, something wrong on your request") // 400
-	ErrInternalServer = errors.New("Internal Server Error")                        // 500
+	ErrBadRequest     = errors.New("Bad Request")           // 400
+	ErrInternalServer = errors.New("Internal Server Error") // 500
 )
 
 // Error is
@@ -20,8 +20,15 @@ type Error struct {
 
 // NewError is
 func NewError(f *fiber.Ctx, code int, m string) error {
+	var status error
+	switch code {
+	case fiber.StatusBadRequest:
+		status = ErrBadRequest
+	default:
+		status = ErrInternalServer
+	}
 	data := Error{
-		Status:  m,
+		Status:  status.Error(),
 		Message: m,
 	}
 	return f.Status(code).JSON(data)
