@@ -1,6 +1,7 @@
 package activity
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/jadahbakar/skyshi-todolist/util/logger"
@@ -24,6 +25,9 @@ func NewService(r Repository) Service {
 }
 
 func (s *srv) Create(req *PostReq) (*Activity, error) {
+	if req.Title == "" || req.Email == "" {
+		return nil, errors.New("Title & Email Tidak boleh Kosong!")
+	}
 	id, err := s.repo.Create(req)
 	if err != nil {
 		return nil, err

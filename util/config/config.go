@@ -25,7 +25,6 @@ type (
 	}
 
 	Database struct {
-		Url             string
 		MigrationFolder string
 		Host            string
 		Port            int

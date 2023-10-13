@@ -45,7 +45,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	}
 
 	//---response
-	return response.NewSuccess(c, fiber.StatusOK, data)
+	return response.NewSuccess(c, fiber.StatusCreated, data)
 }
 
 func (h *Handler) Update(c *fiber.Ctx) error {

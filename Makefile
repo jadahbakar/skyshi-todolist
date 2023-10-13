@@ -35,6 +35,6 @@ upload:
 	@docker push $(DOCKER_HUB_REPO)
 
 run:
-	@docker run -e MYSQL_HOST=172.17.0.2 -e MYSQL_USER=$(MYSQL_USER) -e MYSQL_PASSWORD=$(MYSQL_PASSWORD) -e MYSQL_DBNAME=$(MYSQL_DBNAME) -p 3030:3030 $(DOCKER_HUB_REPO):latest
+	@docker run -e MYSQL_HOST=172.17.0.2 -e MYSQL_USER=$(MYSQL_USER) -e MYSQL_PASSWORD=$(MYSQL_PASSWORD) -e MYSQL_DATABASE=$(MYSQL_DBNAME) -p 3030:3030 $(DOCKER_HUB_REPO):latest
 
 .PHONY: server rm rmi prune mysqldb build push upload run

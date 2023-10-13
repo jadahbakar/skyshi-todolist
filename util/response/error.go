@@ -14,12 +14,14 @@ var (
 
 // Error is
 type Error struct {
+	Status  string `json:"status"`
 	Message string `json:"remark"`
 }
 
 // NewError is
 func NewError(f *fiber.Ctx, code int, m string) error {
 	data := Error{
+		Status:  m,
 		Message: m,
 	}
 	return f.Status(code).JSON(data)

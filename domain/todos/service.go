@@ -1,6 +1,7 @@
 package todos
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/jadahbakar/skyshi-todolist/util/logger"
@@ -24,6 +25,9 @@ func NewService(r Repository) Service {
 }
 
 func (s *srv) Create(req *PostReq) (*Todo, error) {
+	if req.Title == "" {
+		return nil, errors.New("title tidak boleh kosong")
+	}
 	id, err := s.repo.Create(req)
 	if err != nil {
 		return nil, err
