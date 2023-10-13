@@ -34,18 +34,18 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	validate := validator.NewValidator()
 	if err := validate.Struct(req); err != nil {
 		logger.Errorf("Error On Validate: ", err)
-		return response.BadRequest(c, err)
+		return response.BadRequest(c, err.Error())
 	}
 
 	//---service
 	data, err := h.service.Create(req)
 	if err != nil {
 		logger.Errorf("Error On Service: ", err)
-		return response.HandleErrors(c, err.Error())
+		return response.BadRequest(c, err.Error())
 	}
 
 	//---response
-	return response.NewSuccess(c, fiber.StatusOK, data)
+	return response.NewSuccess(c, fiber.StatusCreated, data)
 }
 
 func (h *Handler) Update(c *fiber.Ctx) error {
@@ -60,7 +60,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	validate := validator.NewValidator()
 	if err := validate.Struct(req); err != nil {
 		logger.Errorf("Error On Validate: ", err)
-		return response.BadRequest(c, err)
+		return response.BadRequest(c, err.Error())
 	}
 
 	param := c.Params("id")

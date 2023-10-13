@@ -1,14 +1,17 @@
 mysqldb:
-	docker run --name mysql81 -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=todolist -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -p 3306:3306 -d mysql:8.1
+	docker run --name mysql81 -e MYSQL_ROOT_PASSWORD=secret -e MYSQL_DATABASE=todo4 -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -p 3306:3306 -d mysql:8.1
 
 migrateup:
-	migrate -path db/migration -database "mysql://todo:secret@tcp(mysql:3306)/todolist" -verbose up
+	migrate -path db/migrations -database "mysql://todo:secret@tcp(localhost:3306)/todo4" -verbose up
 
 migratedown:
-	migrate -path db/migration -database "mysql://todo:secret@tcp(mysql:3306)/todolist" -verbose down
+	migrate -path db/migrations -database "mysql://todo:secret@tcp(localhost:3306)/todo4" -verbose down
 
 server:
 	go run main.go
+
+reload:
+	@reflex -r '\.go' -s -- sh -c "go run main.go serve"
 
 up:
 	docker compose up
@@ -16,7 +19,8 @@ up:
 clear:
 	docker stop $(docker ps -a -q)
 	docker rm $(docker ps -a -q)
-	docker rmi $(docker images -a -q)
+	docker volume rm $(docker volume ls -q)
+	docker rmi $(docker images -q)
 	docker system prune
 
 rm:

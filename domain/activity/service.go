@@ -1,9 +1,12 @@
 package activity
 
 import (
+	"errors"
 	"strconv"
+	"strings"
 
 	"github.com/jadahbakar/skyshi-todolist/util/logger"
+	"github.com/jadahbakar/skyshi-todolist/util/variable"
 )
 
 type srv struct {
@@ -24,6 +27,15 @@ func NewService(r Repository) Service {
 }
 
 func (s *srv) Create(req *PostReq) (*Activity, error) {
+	trimTitle := strings.Trim(req.Title, " \t\n")
+	trimEmail := strings.Trim(req.Email, " \t\n")
+	if trimTitle == "" {
+		return nil, errors.New("title cannot be null")
+	}
+	if trimEmail == "" {
+		return nil, errors.New("email cannot be null")
+	}
+
 	id, err := s.repo.Create(req)
 	if err != nil {
 		return nil, err
@@ -37,15 +49,21 @@ func (s *srv) Update(param string, title string) (*Activity, error) {
 	id, err := strconv.ParseInt(param, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
-		return nil, err
+		return nil, variable.ErrNotFound
 	}
 
-	resid, err := s.repo.Update(id, title)
+	res, err := s.FindById(id)
+	if err != nil {
+		return nil, variable.ErrNotFound
+	}
+
+	resid, err := s.repo.Update(int64(res.Id), title)
 	if err != nil {
 		return nil, err
 	}
-	res, err := s.FindById(resid)
-	return res, err
+
+	result, err := s.FindById(resid)
+	return result, err
 
 }
 
