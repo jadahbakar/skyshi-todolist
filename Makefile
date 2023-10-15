@@ -48,13 +48,13 @@ hapus:
 include config.env
 NAME							= $(APP_NAME)
 VERSION 					= $(shell git describe --tags --always)
-DOCKER_HUB_REPO		= slackman/skyshi-todolist
+DOCKER_HUB_REPO		= slackman/skyshi-todo
 DOCKER_IMAGE_NAME	= $(NAME):$(VERSION)
 
 
 build:
 	@echo "-> Running $@"
-	@docker build --build-arg TAGGED=builder-${DOCKER_IMAGE_NAME} --file Dockerfile-single --tag $(DOCKER_IMAGE_NAME) .
+	@docker build --build-arg TAGGED=builder-${DOCKER_IMAGE_NAME} --file Dockerfile --tag $(DOCKER_IMAGE_NAME) .
 
 push:
 	@echo "-> Running $@"
@@ -64,7 +64,6 @@ push:
 
 upload:
 	@docker push $(DOCKER_HUB_REPO)
-		-t $(DOCKER_IMAGE_NAME) .
 
 run:
 	@docker run -e MYSQL_HOST=172.19.0.2 -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -e MYSQL_DBNAME=todolist -p 8090:3030 slackman/skyshi-todolist
