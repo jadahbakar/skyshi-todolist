@@ -17,10 +17,10 @@ up:
 	docker compose up
 
 clear:
-	docker stop $(docker ps -a -q)
-	docker rm $(docker ps -a -q)
-	docker volume rm $(docker volume ls -q)
-	docker rmi $(docker images -q)
+	docker stop $$(docker ps -a -q)
+	docker rm $$(docker ps -a -q)
+	docker volume rm $$(docker volume ls -q)
+	docker rmi $$(docker images -q)
 	docker system prune
 
 rm:
@@ -31,6 +31,13 @@ rmi:
 
 prune:
 	docker system prune
+
+rm-test:
+	docker ps -a --filter "ancestor=monsterup/devcode-unit-test-1" -q | xargs docker rm
+
+test:
+	docker ps -a --filter "ancestor=monsterup/devcode-unit-test-1" -q | xargs docker rm
+	docker run -e API_URL=http://host.docker.internal:3030 monsterup/devcode-unit-test-1
 
 hapus:
 	docker rm $(docker ps -a -q --filter="name=skyshi-todolist-api-1")

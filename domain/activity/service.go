@@ -1,12 +1,11 @@
 package activity
 
 import (
-	"errors"
 	"strconv"
 	"strings"
 
+	"github.com/jadahbakar/skyshi-todolist/util/errorlib"
 	"github.com/jadahbakar/skyshi-todolist/util/logger"
-	"github.com/jadahbakar/skyshi-todolist/util/variable"
 )
 
 type srv struct {
@@ -30,10 +29,11 @@ func (s *srv) Create(req *PostReq) (*Activity, error) {
 	trimTitle := strings.Trim(req.Title, " \t\n")
 	trimEmail := strings.Trim(req.Email, " \t\n")
 	if trimTitle == "" {
-		return nil, errors.New("title cannot be null")
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "title cannot be null")
 	}
 	if trimEmail == "" {
-		return nil, errors.New("email cannot be null")
+		// return nil, errors.New("email cannot be null")
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "email cannot be null")
 	}
 
 	id, err := s.repo.Create(req)
@@ -49,12 +49,12 @@ func (s *srv) Update(param string, title string) (*Activity, error) {
 	id, err := strconv.ParseInt(param, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
-		return nil, variable.ErrNotFound
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "error parsing id")
 	}
 
 	res, err := s.FindById(id)
 	if err != nil {
-		return nil, variable.ErrNotFound
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeNotFound, "Not Found")
 	}
 
 	resid, err := s.repo.Update(int64(res.Id), title)
@@ -70,8 +70,7 @@ func (s *srv) Update(param string, title string) (*Activity, error) {
 func (s *srv) Delete(param string) (int64, error) {
 	id, err := strconv.ParseInt(param, 10, 64)
 	if err != nil {
-		logger.Error("error parsing id")
-		return 0, err
+		return 0, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "error parsing id")
 	}
 
 	resid, err := s.repo.Delete(id)
@@ -91,10 +90,13 @@ func (s *srv) FindActId(param string) (*Activity, error) {
 	id, err := strconv.ParseInt(param, 10, 64)
 	if err != nil {
 		logger.Error("error parsing id")
-		return nil, err
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "error parsing id")
 	}
 
 	res, err := s.FindById(id)
+	if err != nil {
+		return nil, err
+	}
 	return res, err
 
 }

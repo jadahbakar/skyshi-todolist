@@ -3,6 +3,7 @@ package todos
 import (
 	"fmt"
 
+	"github.com/jadahbakar/skyshi-todolist/util/errorlib"
 	"github.com/jadahbakar/skyshi-todolist/util/logger"
 	"github.com/jmoiron/sqlx"
 )
@@ -28,16 +29,14 @@ func (r *repo) Create(req *PostReq) (int, error) {
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)
-		return 0, err
+		return 0, errorlib.WrapErr(err, errorlib.ErrorCodeUnknown, "insert activities")
 	}
 
 	lastId, err := res.LastInsertId()
 	if err != nil {
 		logger.Errorf("last_insert_id: %v", err)
-		return 0, err
+		return 0, errorlib.WrapErr(err, errorlib.ErrorCodeNotFound, "id not found")
 	}
-
-	logger.Infof("LastInsertId: %d", int(lastId))
 
 	return int(lastId), nil
 }
@@ -48,7 +47,7 @@ func (r *repo) GetById(id int) (*Todo, error) {
 	err := r.db.QueryRow(query, id).Scan(&t.Id, &t.Title, &t.ActivityId, &t.IsActive, &t.Priority, &t.CreatedAt, &t.UpdatedAt)
 	if err != nil {
 		logger.Errorf("error: %v", err)
-		return nil, err
+		return nil, errorlib.WrapErr(err, errorlib.ErrorCodeNotFound, "not found")
 	}
 	return &t, nil
 }
@@ -58,18 +57,18 @@ func (r *repo) Update(id int, req *PatchReq) (int, error) {
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)
-		return 0, err
+		return 0, errorlib.WrapErr(err, errorlib.ErrorCodeInternal, "update activities")
 	}
 
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		logger.Errorf("last_insert_id: %v", err)
-		return 0, err
+		return 0, errorlib.WrapErr(err, errorlib.ErrorCodeInternal, "update activities")
 	}
 
 	if affectedRows == 0 {
 		logger.Errorf("no row affected: %v", err)
-		return 0, err
+		return 0, errorlib.WrapErr(err, errorlib.ErrorCodeInternal, "affected rows")
 	}
 
 	return id, nil
@@ -80,17 +79,17 @@ func (r *repo) Delete(id int) (int, error) {
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)
-		return 0, err
+		return 0, errorlib.WrapErr(err, errorlib.ErrorCodeInternal, "delete activities")
 	}
 	affectedRows, err := res.RowsAffected()
 	if err != nil {
 		logger.Errorf("last_insert_id: %v", err)
-		return 0, err
+		return 0, errorlib.WrapErr(err, errorlib.ErrorCodeInternal, "affected rows")
 	}
 
 	if affectedRows == 0 {
 		logger.Errorf("no row affected: %v", err)
-		return 0, err
+		return 0, errorlib.WrapErr(err, errorlib.ErrorCodeInternal, "affected rows")
 	}
 
 	return id, nil
@@ -103,7 +102,7 @@ func (r *repo) GetAll(id int) ([]Todo, error) {
 	rows, err := r.db.Query(query)
 	if err != nil {
 		logger.Errorf("Error Query: %v", err)
-		return nil, err
+		return nil, errorlib.WrapErr(err, errorlib.ErrorCodeInvalidArgument, "error query")
 	}
 	for rows.Next() {
 		err = rows.Scan(
@@ -116,13 +115,13 @@ func (r *repo) GetAll(id int) ([]Todo, error) {
 			&t.UpdatedAt,
 		)
 		if err != nil {
-			return nil, err
+			return nil, errorlib.WrapErr(err, errorlib.ErrorCodeInvalidArgument, "error scan")
 		}
 		result = append(result, t)
 	}
 	if rows.Err() != nil {
 		logger.Errorf("Error Reading Rows: \n", err)
-		return nil, rows.Err()
+		return nil, errorlib.WrapErr(rows.Err(), errorlib.ErrorCodeInternal, "error reading rows")
 	}
 	return result, nil
 }

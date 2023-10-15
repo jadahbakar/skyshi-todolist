@@ -2,15 +2,17 @@ package response
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/jadahbakar/skyshi-todolist/util/errorlib"
 )
 
 // errors response
 var (
 	ErrNotFound       = errors.New("Not Found")             //404
 	ErrBadRequest     = errors.New("Bad Request")           // 400
-	ErrInternalServer = errors.New("Internal Server Error") // 500
+	ErrInternalServer = errors.New("internal server error") // 500
 )
 
 // Error is
@@ -19,36 +21,33 @@ type Error struct {
 	Message string `json:"message"`
 }
 
-// NewError is
-func NewError(f *fiber.Ctx, code int, m string) error {
-	var status string
-	switch code {
-	case 400:
-		status = ErrBadRequest.Error()
-	case 401:
-		status = ErrNotFound.Error()
-	case 500:
-		status = ErrInternalServer.Error()
-	default:
-		status = ErrInternalServer.Error()
+func RenderError(f *fiber.Ctx, err error, msg string) error {
+	code := fiber.StatusInternalServerError
+	status := ErrInternalServer.Error()
+	var ierr *errorlib.Error
+	fmt.Printf("err.Error() : %v\n", err.Error())
+	data := Error{}
+	if !errors.As(err, &ierr) {
+		code = fiber.StatusInternalServerError
+		data = Error{
+			Status:  status,
+			Message: ierr.Error(),
+		}
+	} else {
+		switch ierr.Code() {
+		case errorlib.ErrorCodeNotFound:
+			code = fiber.StatusNotFound
+			status = ErrNotFound.Error()
+		case errorlib.ErrorCodeInvalidArgument:
+			code = fiber.StatusBadRequest
+			status = ErrBadRequest.Error()
+		}
+	}
+	data = Error{
+		Status:  msg,
+		Message: ierr.Error(),
 	}
 
-	data := Error{
-		Status:  status,
-		Message: m,
-	}
 	return f.Status(code).JSON(data)
-}
 
-// BadRequest is | 400
-func BadRequest(f *fiber.Ctx, s string) error {
-	return NewError(f, fiber.StatusBadRequest, s)
-}
-
-func HandleErrors(f *fiber.Ctx, s string) error {
-	return NewError(f, fiber.StatusInternalServerError, s)
-}
-
-func NotFound(f *fiber.Ctx, s string) error {
-	return NewError(f, fiber.StatusNotFound, s)
 }
