@@ -25,7 +25,10 @@ func RenderError(f *fiber.Ctx, err error, msg string) error {
 	code := fiber.StatusInternalServerError
 	status := ErrInternalServer.Error()
 	var ierr *errorlib.Error
-	fmt.Printf("err.Error() : %v\n", err.Error())
+
+	fmt.Printf("err : %v\n", err)
+	// fmt.Printf("ierr.Code() : %d\n", ierr.Code())
+
 	data := Error{}
 	if !errors.As(err, &ierr) {
 		code = fiber.StatusInternalServerError
@@ -44,7 +47,7 @@ func RenderError(f *fiber.Ctx, err error, msg string) error {
 		}
 	}
 	data = Error{
-		Status:  msg,
+		Status:  status,
 		Message: ierr.Error(),
 	}
 

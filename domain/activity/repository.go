@@ -90,7 +90,7 @@ func (r *repo) GetById(id int64) (*Activity, error) {
 	err := r.db.QueryRow(query, id).Scan(&t.Id, &t.Title, &t.Email, &t.CreatedAt, &t.UpdatedAt)
 	if err != nil {
 		logger.Errorf("error: %v", err)
-		return nil, errorlib.WrapErr(err, errorlib.ErrorCodeNotFound, "Not Found")
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeNotFound, "Activity with ID %d Not Found", id)
 	}
 	return &t, nil
 }

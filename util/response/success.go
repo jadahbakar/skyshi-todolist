@@ -1,6 +1,8 @@
 package response
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"github.com/gofiber/fiber/v2"
+)
 
 // Success is
 type Success struct {
@@ -20,14 +22,17 @@ func NewSuccess(c *fiber.Ctx, code int, d interface{}) error {
 }
 
 type Deleted struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
+	Status  string      `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
-func SuccessDelete(c *fiber.Ctx, code int, m string) error {
+func SuccessDelete(c *fiber.Ctx, code int, m string, d interface{}) error {
+
 	data := Deleted{
-		Status:  "Not Found",
+		Status:  "Success",
 		Message: m,
+		Data:    d,
 	}
 	return c.Status(code).JSON(data)
 }

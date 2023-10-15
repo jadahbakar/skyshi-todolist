@@ -76,7 +76,6 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	param := c.Params("id")
 	if param == "" {
 		logger.Error("param not found")
-		// return response.NotFound(c, "Not Found")
 		return response.RenderError(c, errorlib.WrapErr(errors.New("not found"), errorlib.ErrorCodeNotFound, "not found"), "not found")
 	}
 
@@ -105,8 +104,9 @@ func (h *Handler) Delete(c *fiber.Ctx) error {
 	}
 
 	resp := fmt.Sprintf("Activity with ID %d Not Found", data)
+	var empty struct{}
 	//---response
-	return response.SuccessDelete(c, fiber.StatusOK, resp)
+	return response.SuccessDelete(c, fiber.StatusOK, resp, empty)
 }
 
 func (h *Handler) GetById(c *fiber.Ctx) error {

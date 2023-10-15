@@ -31,8 +31,7 @@ func (s *srv) Create(req *PostReq) (*Todo, error) {
 		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "title cannot be null")
 	}
 	if req.ActivityId == 0 {
-		// return nil, errors.New("email cannot be null")
-		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "email cannot be null")
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "activity_group_id cannot be null")
 	}
 
 	id, err := s.repo.Create(req)
@@ -57,11 +56,16 @@ func (s *srv) Update(param string, req *PatchReq) (*Todo, error) {
 
 	}
 
+	res, err := s.FindById(id)
+	if err != nil {
+		return nil, err
+	}
+
 	resid, err := s.repo.Update(id, req)
 	if err != nil {
 		return nil, err
 	}
-	res, err := s.FindById(resid)
+	res, err = s.FindById(resid)
 	return res, err
 
 }
@@ -72,12 +76,18 @@ func (s *srv) Delete(param string) (int, error) {
 		logger.Error("error parsing id")
 		return 0, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "error parsing id")
 	}
+
+	_, err = s.FindById(id)
+	if err != nil {
+		return 0, err
+	}
+
 	_, err = s.repo.Delete(id)
 	if err != nil {
 		return 0, err
 	}
 
-	return id, err
+	return id, nil
 }
 
 func (s *srv) FindAll(param string) ([]Todo, error) {

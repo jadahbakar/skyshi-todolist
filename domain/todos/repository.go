@@ -25,7 +25,8 @@ func NewRepository(db *sqlx.DB) Repository {
 }
 
 func (r *repo) Create(req *PostReq) (int, error) {
-	query := fmt.Sprintf("INSERT INTO todos(title, activity_group_id, is_active, priority, created_at, updated_at) VALUES ('%s', %d, %t, 'very-high',now(), now())", req.Title, req.ActivityId, req.IsActive)
+	// query := fmt.Sprintf("INSERT INTO todos(title, activity_group_id, is_active, priority, created_at, updated_at) VALUES ('%s', %d, %t, 'very-high',now(), now())", req.Title, req.ActivityId, req.IsActive)
+	query := fmt.Sprintf("INSERT INTO todos(title, activity_group_id, is_active, priority, created_at, updated_at) VALUES ('%s', %d, %t, 'very-high',now(), now())", req.Title, req.ActivityId, true)
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)
@@ -47,13 +48,14 @@ func (r *repo) GetById(id int) (*Todo, error) {
 	err := r.db.QueryRow(query, id).Scan(&t.Id, &t.Title, &t.ActivityId, &t.IsActive, &t.Priority, &t.CreatedAt, &t.UpdatedAt)
 	if err != nil {
 		logger.Errorf("error: %v", err)
-		return nil, errorlib.WrapErr(err, errorlib.ErrorCodeNotFound, "not found")
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeNotFound, "Todo with ID %d Not Found", id)
 	}
 	return &t, nil
 }
 
 func (r *repo) Update(id int, req *PatchReq) (int, error) {
-	query := fmt.Sprintf("UPDATE todos SET title = '%s', priority = '%s',  is_active = %t, updated_at = now() WHERE todo_id = %d", req.Title, req.Priority, req.IsActive, id)
+	// query := fmt.Sprintf("UPDATE todos SET title = '%s', priority = '%s',  is_active = %t, updated_at = now() WHERE todo_id = %d", req.Title, req.Priority, req.IsActive, id)
+	query := fmt.Sprintf("UPDATE todos SET title = '%s', priority = '%s', is_active = %t, updated_at = now() WHERE todo_id = %d", req.Title, "very-high", req.IsActive, id)
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)

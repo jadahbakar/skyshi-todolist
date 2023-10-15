@@ -90,7 +90,8 @@ func (h *Handler) Delete(c *fiber.Ctx) error {
 
 	resp := fmt.Sprintf("Activity with ID %d Not Found", data)
 	//---response
-	return response.SuccessDelete(c, fiber.StatusOK, resp)
+	var empty struct{}
+	return response.SuccessDelete(c, fiber.StatusOK, resp, empty)
 }
 
 func (h *Handler) GetAll(c *fiber.Ctx) error {

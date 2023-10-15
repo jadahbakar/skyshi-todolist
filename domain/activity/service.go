@@ -54,7 +54,7 @@ func (s *srv) Update(param string, title string) (*Activity, error) {
 
 	res, err := s.FindById(id)
 	if err != nil {
-		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeNotFound, "Not Found")
+		return nil, err
 	}
 
 	resid, err := s.repo.Update(int64(res.Id), title)
@@ -73,6 +73,11 @@ func (s *srv) Delete(param string) (int64, error) {
 		return 0, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "error parsing id")
 	}
 
+	_, err = s.FindById(id)
+	if err != nil {
+		return 0, err
+	}
+
 	resid, err := s.repo.Delete(id)
 	if err != nil {
 		return 0, err
@@ -83,7 +88,10 @@ func (s *srv) Delete(param string) (int64, error) {
 
 func (s *srv) FindById(id int64) (*Activity, error) {
 	res, err := s.repo.GetById(id)
-	return res, err
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 func (s *srv) FindActId(param string) (*Activity, error) {
