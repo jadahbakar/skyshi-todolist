@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/golang-migrate/migrate"
 	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jadahbakar/skyshi-todolist/domain"
@@ -34,15 +35,15 @@ func main() {
 	}
 	log.Printf("Connected to DB....")
 
-	// log.Printf("Prepare Migration..")
-	// driver, err := migrate.New("file://"+config.Db.MigrationFolder, "mysql://"+config.Db.Url)
-	// if err != nil {
-	// 	log.Fatalf("Error creating migration driver: %s", err)
-	// }
-	// if err := driver.Up(); err != nil && err != migrate.ErrNoChange {
-	// 	log.Fatalf("Error applying migrations: %s", err)
-	// }
-	// log.Println("Migrations applied successfully!")
+	log.Printf("Prepare Migration..")
+	driver, err := migrate.New("file://"+config.Db.MigrationFolder, "mysql://"+config.Db.Url)
+	if err != nil {
+		log.Fatalf("Error creating migration driver: %s", err)
+	}
+	if err := driver.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatalf("Error applying migrations: %s", err)
+	}
+	log.Println("Migrations applied successfully!")
 
 	domain.MonolithIOC(server, db)
 
