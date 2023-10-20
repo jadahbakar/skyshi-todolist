@@ -39,6 +39,11 @@ test:
 	docker ps -a --filter "ancestor=monsterup/devcode-unit-test-1" -q | xargs docker rm
 	docker run -e API_URL=http://host.docker.internal:3030 monsterup/devcode-unit-test-1
 
+hapuss:
+	docker ps -a --filter "ancestor=slackman/skyshi-todo" -q | xargs docker rm
+	docker rmi -f $$(docker images 'skyshi-todo' -a -q)
+	docker rmi -f $$(docker images -f "dangling=true" -q)
+
 hapus:
 	docker rm $(docker ps -a -q --filter="name=skyshi-todolist-api-1")
 	docker rmi $(docker images 'skyshi-todolist_api' -a -q)
@@ -64,10 +69,12 @@ tag:
 	@docker images
 
 upload:
-	@docker push $(DOCKER_HUB_REPO)
+	@docker push slackman/skyshi-todo
 
 run:
-	@docker run -e MYSQL_HOST=172.17.0.2 -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -e MYSQL_DBNAME=todolist -p 8090:3030 slackman/skyshi-todo
+	@docker run -e MYSQL_HOST=172.17.0.2 -e MYSQL_USER=todo -e MYSQL_PASSWORD=secret -e MYSQL_DBNAME=todo4 -p 3030:3030 slackman/skyshi-todo
 
+
+running: build tag run
 
 .PHONY: mysqldb migrateup migratedown server up clear rm rmi prune hapus push upload

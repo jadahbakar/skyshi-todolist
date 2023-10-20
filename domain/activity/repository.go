@@ -42,7 +42,7 @@ func (r *repo) Create(req *PostReq) (int64, error) {
 }
 
 func (r *repo) Update(id int64, title string) (int64, error) {
-	query := fmt.Sprintf("UPDATE activities SET title = '%s', updated_at =  now() WHERE activity_id = %d", title, id)
+	query := fmt.Sprintf("UPDATE activities SET title = '%s', updated_at =  now() WHERE id = %d", title, id)
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)
@@ -64,7 +64,7 @@ func (r *repo) Update(id int64, title string) (int64, error) {
 }
 
 func (r *repo) Delete(id int64) (int64, error) {
-	query := fmt.Sprintf("DELETE FROM activities WHERE activity_id = %d", id)
+	query := fmt.Sprintf("DELETE FROM activities WHERE id = %d", id)
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)
@@ -86,7 +86,7 @@ func (r *repo) Delete(id int64) (int64, error) {
 
 func (r *repo) GetById(id int64) (*Activity, error) {
 	var t Activity
-	query := "SELECT activity_id, title, email, created_at, updated_at FROM activities WHERE activity_id = ?"
+	query := "SELECT id, title, email, created_at, updated_at FROM activities WHERE id = ?"
 	err := r.db.QueryRow(query, id).Scan(&t.Id, &t.Title, &t.Email, &t.CreatedAt, &t.UpdatedAt)
 	if err != nil {
 		logger.Errorf("error: %v", err)
@@ -98,7 +98,7 @@ func (r *repo) GetById(id int64) (*Activity, error) {
 func (r *repo) GetAll() ([]Activity, error) {
 	result := make([]Activity, 0)
 	t := Activity{}
-	query := "SELECT activity_id, title, email, created_at, updated_at FROM activities"
+	query := "SELECT id, title, email, created_at, updated_at FROM activities"
 	rows, err := r.db.Query(query)
 	if err != nil {
 		logger.Errorf("Error Query: %v", err)

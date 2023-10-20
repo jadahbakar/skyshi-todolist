@@ -56,11 +56,17 @@ func (s *srv) Update(param string, req *PatchReq) (*Todo, error) {
 
 	}
 
+	trimTitle := strings.Trim(req.Title, " \t\n")
+	if trimTitle == "" {
+		return nil, errorlib.WrapErr(nil, errorlib.ErrorCodeInvalidArgument, "title cannot be null")
+	}
+
 	res, err := s.FindById(id)
 	if err != nil {
 		return nil, err
 	}
 
+	logger.Info(req)
 	resid, err := s.repo.Update(id, req)
 	if err != nil {
 		return nil, err

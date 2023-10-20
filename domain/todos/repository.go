@@ -3,6 +3,7 @@ package todos
 import (
 	"fmt"
 
+	"github.com/gofiber/fiber/v2/log"
 	"github.com/jadahbakar/skyshi-todolist/util/errorlib"
 	"github.com/jadahbakar/skyshi-todolist/util/logger"
 	"github.com/jmoiron/sqlx"
@@ -44,7 +45,7 @@ func (r *repo) Create(req *PostReq) (int, error) {
 
 func (r *repo) GetById(id int) (*Todo, error) {
 	var t Todo
-	query := "SELECT todo_id, title, activity_group_id, is_active, priority, created_at, updated_at FROM todos WHERE todo_id = ?"
+	query := "SELECT id, title, activity_group_id, is_active, priority, created_at, updated_at FROM todos WHERE id = ?"
 	err := r.db.QueryRow(query, id).Scan(&t.Id, &t.Title, &t.ActivityId, &t.IsActive, &t.Priority, &t.CreatedAt, &t.UpdatedAt)
 	if err != nil {
 		logger.Errorf("error: %v", err)
@@ -54,8 +55,8 @@ func (r *repo) GetById(id int) (*Todo, error) {
 }
 
 func (r *repo) Update(id int, req *PatchReq) (int, error) {
-	// query := fmt.Sprintf("UPDATE todos SET title = '%s', priority = '%s',  is_active = %t, updated_at = now() WHERE todo_id = %d", req.Title, req.Priority, req.IsActive, id)
-	query := fmt.Sprintf("UPDATE todos SET title = '%s', priority = '%s', is_active = %t, updated_at = now() WHERE todo_id = %d", req.Title, "very-high", req.IsActive, id)
+	query := fmt.Sprintf("UPDATE todos SET title = '%s', priority = '%s', is_active = %t, status = '%s', updated_at = now() WHERE id = %d", req.Title, "very-high", req.IsActive, req.Status, id)
+	log.Info(query)
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)
@@ -77,7 +78,7 @@ func (r *repo) Update(id int, req *PatchReq) (int, error) {
 }
 
 func (r *repo) Delete(id int) (int, error) {
-	query := fmt.Sprintf("DELETE FROM todos WHERE todo_id = %d", id)
+	query := fmt.Sprintf("DELETE FROM todos WHERE id = %d", id)
 	res, err := r.db.Exec(query)
 	if err != nil {
 		logger.Errorf("error: %v", err)
@@ -100,7 +101,7 @@ func (r *repo) Delete(id int) (int, error) {
 func (r *repo) GetAll(id int) ([]Todo, error) {
 	result := make([]Todo, 0)
 	t := Todo{}
-	query := fmt.Sprintf("SELECT todo_id, activity_group_id, title, is_active, priority, created_at, updated_at FROM todos WHERE activity_group_id = %d", id)
+	query := fmt.Sprintf("SELECT id, activity_group_id, title, is_active, priority, created_at, updated_at FROM todos WHERE activity_group_id = %d", id)
 	rows, err := r.db.Query(query)
 	if err != nil {
 		logger.Errorf("Error Query: %v", err)

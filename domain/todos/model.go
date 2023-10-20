@@ -6,6 +6,7 @@ type Todo struct {
 	ActivityId int    `json:"activity_group_id"`
 	IsActive   bool   `json:"is_active"`
 	Priority   string `json:"priority"`
+	Status     string `json:"status"`
 	CreatedAt  string `json:"createdAt"`
 	UpdatedAt  string `json:"updatedAt"`
 }
@@ -20,4 +21,5 @@ type PatchReq struct {
 	Title    string `json:"title"`
 	Priority string `json:"priority"`
 	IsActive bool   `json:"is_active"`
+	Status   string `json:"status"`
 }

@@ -67,6 +67,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 
 	param := c.Params("id")
 
+	// logger.Info(req)
 	//---service
 	data, err := h.service.Update(param, req)
 	if err != nil {
@@ -74,6 +75,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		return response.RenderError(c, err, "Bad Request")
 	}
 
+	logger.Info(data)
 	//---response
 	return response.NewSuccess(c, fiber.StatusOK, data)
 }
